@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #000000;
+    --foreground: #ffffff;
   }
 }
 
@@ -18,4 +18,89 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.common-sign-box {
+  width: 400px;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
+  box-shadow: 0 15px 25px #2d4263;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.common-sign-box .user-box {
+  position: relative;
+  margin: 1.5rem;
+}
+
+.common-sign-box .user-box input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+
+.common-sign-box .user-box label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: 0.5s;
+}
+
+.common-sign-box .user-box input:focus ~ label,
+.common-sign-box .user-box input:active ~ label {
+  top: -20px;
+  left: 0;
+  font-size: 15px;
+}
+
+.common-sign-box button {
+  margin-bottom: 1.5rem;
+  background-color: #2d4263;
+  width: 8rem;
+  height: 2.5rem;
+  border-radius: 0.2rem;
+}
+
+.hero-slider-box {
+  margin: 10px auto;
+  width: 75%;
+  height: 500px;
+}
+
+.background-slider {
+  height: 400px;
+  width: 30%;
+  margin: auto 0;
+}
+
+.search-result {
+  position: absolute;
+  top: 60;
+  z-index: 40;
+  background-color: #2d42633d;
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  box-shadow: 0 15px 25px black;
+}
+.search-result p {
+  font-size: 10px;
+}
+
+.search-result-item {
+  display: flex;
+  justify-content: space-between;
 }
