@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 import axios from "axios";
 import { useCallback, useState } from "react";
@@ -11,7 +10,7 @@ function Sign({ from }: { from: "signin" | "signup" }) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
-  const [_, setCookie] = useCookies(["user_id"]);
+  const [, setCookie] = useCookies(["user_id"]);
 
   const handleSubmit = useCallback(async () => {
     try {
@@ -23,8 +22,14 @@ function Sign({ from }: { from: "signin" | "signup" }) {
         }
       );
       if (response.data.success) {
-        response.data.id && setCookie("user_id", response.data.id);
-        from == "signup" ? router.push("/signin") : router.push("/home");
+        if (response.data.id) {
+          setCookie("user_id", response.data.id);
+        }
+        if (from === "signup") {
+          router.push("/signin");
+        } else {
+          router.push("/home");
+        }
         toast.success(response.data.message);
       } else {
         toast({
