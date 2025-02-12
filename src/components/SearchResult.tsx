@@ -6,7 +6,7 @@ function SearchResult({ result }) {
     <div>
       {result.map((eachResult: Movie, index) => {
         return (
-          <div key={index} className="search-result-item p-1">
+          <div key={index} className="search-result-item p-1 text-white">
             <p>{eachResult.original_title}</p>
             <p>{eachResult.release_date}</p>
           </div>

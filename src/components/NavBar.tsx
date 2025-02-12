@@ -34,7 +34,7 @@ const Navbar = () => {
     "block px-4 py-2 text-white hover:text-[#2d4263] hover:bg-white transition-colors duration-200";
 
   return (
-    <nav className="bg-black border-b border-white/20">
+    <nav className="bg-black">
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
         {/* Logo */}
         <a href="#" className="flex items-center space-x-3">

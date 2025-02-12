@@ -7,6 +7,13 @@ import { Movie } from "@/types/request-body";
 import NavBar from "@/components/NavBar";
 import { useRouter } from "next/navigation";
 import HeroCarousel from "@/components/HeroCarousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 function Home() {
   const [popularList, setPopularList] = useState([]);
@@ -50,25 +57,39 @@ function Home() {
       <NavBar />
       <HeroCarousel slides={popularList} />
       <button onClick={handleLogout}>Logout</button>
-      <div>
-        {popularList.length > 0 &&
-          popularList.map((movie: Movie, id) => {
-            const imgPath =
-              "https://image.tmdb.org/t/p/original" + movie.poster_path;
-            return (
-              <div key={id}>
-                <Image
-                  width={150}
-                  height={150}
-                  src={imgPath}
-                  alt=""
-                  blurDataURL="data:..."
-                  placeholder="blur"
-                />
-                <p>{movie.original_title}</p>
-              </div>
-            );
-          })}
+      <div className="p-20">
+        <Carousel
+          opts={{
+            align: "start",
+          }}
+        >
+          <CarouselContent className="-ml-4">
+            {popularList.length > 0 &&
+              popularList.map((movie: Movie, id) => {
+                const imgPath =
+                  "https://image.tmdb.org/t/p/original" + movie.poster_path;
+                return (
+                  <CarouselItem key={id} className="basis-1/7">
+                    <div className="p-1">
+                      <span>
+                        <Image
+                          width={180}
+                          height={220}
+                          src={imgPath}
+                          className="rounded-2xl"
+                          alt=""
+                          blurDataURL="data:..."
+                          placeholder="blur"
+                        />
+                      </span>
+                    </div>
+                  </CarouselItem>
+                );
+              })}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
     </div>
   );

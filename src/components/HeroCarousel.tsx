@@ -1,69 +1,72 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Movie } from "@/types/request-body";
+import type { Movie } from "@/types/request-body";
+
+const imageLoaded = (event: React.SyntheticEvent<HTMLImageElement>) => {
+  event.currentTarget.style.opacity = "1";
+};
 
 interface HeroCarouselProps {
   slides: Movie[];
 }
 
+const getAdjacentSlides = (current: number, slides: Movie[]) => {
+  const prevIndex = (current - 1 + slides.length) % slides.length;
+  const nextIndex = (current + 1) % slides.length;
+  return [slides[prevIndex], slides[current], slides[nextIndex]];
+};
+
 const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [slideDirection, setSlideDirection] = useState<"left" | "right">(
-    "right"
-  );
+  const [, setSlideDirection] = useState<"left" | "right">("right");
+  const slideRef = useRef<HTMLDivElement>(null);
+  // const autoPlayRef = useRef<NodeJS.Timeout>();
+
   useEffect(() => {
-    let interval: any;
-    if (isAutoPlaying) {
-      interval = setInterval(() => {
-        setSlideDirection("right");
+    let timeoutId: NodeJS.Timeout;
+
+    const startAutoPlay = () => {
+      timeoutId = setTimeout(() => {
         setCurrentSlide((prev) => (prev + 1) % slides.length);
+        setSlideDirection("right");
       }, 3000);
+    };
+
+    if (isAutoPlaying) {
+      startAutoPlay();
     }
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, slides.length]);
-  // Guard against empty slides array
-  if (!slides || slides.length === 0) {
-    return null;
-  }
 
-  const goToSlide = (index: number) => {
-    setSlideDirection(index > currentSlide ? "right" : "left");
-    setCurrentSlide(index);
+    return () => {
+      clearTimeout(timeoutId); // Clear the timeout when the component unmounts or dependencies change
+    };
+  }, [isAutoPlaying, currentSlide, slides.length]); // Add `currentSlide` to the dependency array
+
+  const handlePrev = () => {
     setIsAutoPlaying(false);
-  };
-
-  const previousSlide = () => {
-    setSlideDirection("left");
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-    setIsAutoPlaying(false);
+    setSlideDirection("left");
   };
 
-  const nextSlide = () => {
-    setSlideDirection("right");
+  const handleNext = () => {
+    setIsAutoPlaying(false);
     setCurrentSlide((prev) => (prev + 1) % slides.length);
-    setIsAutoPlaying(false);
+    setSlideDirection("right");
   };
 
-  const getAdjacentSlides = () => {
-    const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
-    const nextIndex = (currentSlide + 1) % slides.length;
-    return [slides[prevIndex], slides[nextIndex]];
-  };
-
-  // Default image to use if backdrop_path is missing
-  const defaultImagePath = "/api/placeholder/1920/1080";
+  const defaultImagePath = "/images/default-movie-poster.jpg";
+  const adjacentSlides = getAdjacentSlides(currentSlide, slides);
 
   return (
     <div
-      className="relative hero-slider-box h-[600px]"
-      onMouseLeave={() => setIsAutoPlaying(true)}
+      className="relative hero-slider-box h-[70vmin] w-[70vmin] mx-auto"
+      ref={slideRef}
     >
       {/* Background slides */}
-
-      <div className="absolute inset-0 flex justify-between w-full z-10">
-        {getAdjacentSlides().map((slide, index) => (
+      <div className="absolute inset-0 flex justify-between w-full">
+        {adjacentSlides.map((slide, index) => (
           <div
             key={slide?.id || index}
             className={`background-slider relative transition-transform duration-700 ease-in-out ${
@@ -80,7 +83,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
                 alt={slide?.original_title || "Movie poster"}
                 layout="fill"
                 objectFit="cover"
-                className="opacity-50 scale-105 blur-[2px]"
+                className="opacity-50 scale-105 blur-[2px] rounded-3xl"
               />
             </div>
           </div>
@@ -88,7 +91,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
       </div>
 
       {/* Main slides */}
-      <div className="relative overflow-hidden rounded-lg h-full">
+      <div className="relative overflow-hidden rounded-lg h-full [perspective:1200px] [transform-style:preserve-3d]">
         {slides.map((slide, index) => {
           const isCurrentSlide = index === currentSlide;
           const isPrevSlide =
@@ -98,19 +101,20 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
           return (
             <div
               key={slide?.id || index}
-              className={`absolute w-full h-full transform
-                ${
-                  isCurrentSlide
-                    ? "z-20 translate-x-0 opacity-100"
-                    : isPrevSlide && slideDirection === "left"
-                    ? "z-10 -translate-x-full opacity-100"
-                    : isNextSlide && slideDirection === "right"
-                    ? "z-10 translate-x-full opacity-100"
-                    : "z-0 translate-x-0 opacity-0"
-                }`}
+              className={`absolute w-full h-full transform transition-all duration-300 ease-in-out
+              ${
+                isCurrentSlide
+                  ? "z-20 translate-x-0 opacity-100 scale-100 rotateX-0"
+                  : isPrevSlide
+                  ? "z-10 -translate-x-full opacity-100 scale-98 rotateX-8"
+                  : isNextSlide
+                  ? "z-10 translate-x-full opacity-100 scale-98 rotateX-8"
+                  : "z-0 translate-x-0 opacity-0 scale-98 rotateX-8"
+              }`}
               style={{
                 perspective: "1000px",
                 transformStyle: "preserve-3d",
+                transformOrigin: "bottom",
               }}
             >
               <div className="relative w-full h-full">
@@ -124,6 +128,14 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
                   layout="fill"
                   objectFit="cover"
                   priority={isCurrentSlide}
+                  className="transition-opacity duration-600 ease-in-out rounded-3xl main-slide-img"
+                  style={{
+                    opacity: isCurrentSlide ? 1 : 0.5,
+                    transform: isCurrentSlide
+                      ? "translate3d(calc(var(--x) / 30), calc(var(--y) / 30), 0)"
+                      : "none",
+                  }}
+                  onLoad={imageLoaded}
                 />
                 {/* Content overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
@@ -145,45 +157,28 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
       </div>
 
       {/* Slide indicators */}
-      <div className="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
         {slides.map((_, index) => (
-          <button
+          <div
             key={index}
-            type="button"
-            className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-              currentSlide === index
-                ? "bg-white"
-                : "bg-white/50 hover:bg-white/80"
+            className={`w-3 h-3 rounded-full bg-white ${
+              index === currentSlide ? "opacity-100" : "opacity-50"
             }`}
-            aria-current={currentSlide === index}
-            aria-label={`Slide ${index + 1}`}
-            onClick={() => goToSlide(index)}
           />
         ))}
       </div>
 
       {/* Navigation buttons */}
-      <button
-        type="button"
-        className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-        onClick={previousSlide}
-      >
-        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
-          <ChevronLeft className="w-4 h-4 text-white" />
-          <span className="sr-only">Previous</span>
-        </span>
-      </button>
-
-      <button
-        type="button"
-        className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-        onClick={nextSlide}
-      >
-        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
-          <ChevronRight className="w-4 h-4 text-white" />
-          <span className="sr-only">Next</span>
-        </span>
-      </button>
+      <div className="absolute top-1/2 left-4 -translate-y-1/2">
+        <button onClick={handlePrev} className="p-2 rounded-full bg-white/30">
+          <ChevronLeft className="w-6 h-6 text-white" />
+        </button>
+      </div>
+      <div className="absolute top-1/2 right-4 -translate-y-1/2">
+        <button onClick={handleNext} className="p-2 rounded-full bg-white/30">
+          <ChevronRight className="w-6 h-6 text-white" />
+        </button>
+      </div>
     </div>
   );
 };

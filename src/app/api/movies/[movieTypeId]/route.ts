@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest } from "next/server";
 import axios from "axios";
 import { authenticateJWT, getDataFromToken } from "@/helper/common-auth";
@@ -8,27 +9,115 @@ export async function GET(
   { params }: { params: { movieTypeId: string } }
 ) {
   try {
-    const { id: userId } =
-      getSource(request) === "mobile"
-        ? ((await authenticateJWT(request)) as { id: string })
-        : ((await getDataFromToken(request)) as { id: string });
+    // Validate movieTypeId parameter
+    const { movieTypeId } = await params;
+    if (!movieTypeId || typeof movieTypeId !== "string") {
+      return new Response(
+        JSON.stringify({
+          error: "Invalid movieTypeId parameter",
+          success: false,
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
 
-    const { movieTypeId } = await params; // Destructure params directly
+    // Validate API key
     const API_KEY = process.env.API_KEY;
-    // Correct API request URL with the api_key query parameter
+    if (!API_KEY) {
+      throw new Error("API_KEY environment variable is not configured");
+    }
+
+    // Authentication with better error handling
+    let userId: string;
+    try {
+      const source = getSource(request);
+      const authData =
+        source === "mobile"
+          ? await authenticateJWT(request)
+          : await getDataFromToken(request);
+
+      if (!authData || !("id" in authData)) {
+        throw new Error("Authentication failed: Invalid or missing user ID");
+      }
+
+      userId = (authData as { id: string }).id;
+    } catch (authError) {
+      return new Response(
+        JSON.stringify({
+          error: "Authentication failed",
+          success: false,
+        }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Make API request with timeout and proper error handling
     const result = await axios.get(
-      `https://api.themoviedb.org/3/movie/${movieTypeId}?api_key=${API_KEY}`
+      `https://api.themoviedb.org/3/movie/${movieTypeId}`,
+      {
+        params: { api_key: API_KEY },
+        timeout: 5000, // 5 second timeout
+        validateStatus: (status) => status === 200, // Only accept 200 status
+      }
     );
 
-    return new Response(JSON.stringify({ data: result.data, success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    // Proper error handling and return response
     return new Response(
       JSON.stringify({
-        error: error instanceof Error ? error.message : "Unknown error",
+        data: result.data,
+        success: true,
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "s-maxage=3600, stale-while-revalidate", // Add caching
+        },
+      }
+    );
+  } catch (error) {
+    // Enhanced error handling with specific error types
+    if (axios.isAxiosError(error)) {
+      if (error.code === "ECONNABORTED") {
+        return new Response(
+          JSON.stringify({
+            error: "Request timeout",
+            success: false,
+          }),
+          {
+            status: 504,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }
+
+      const status = error.response?.status || 500;
+      const message = error.response?.data?.message || error.message;
+
+      return new Response(
+        JSON.stringify({
+          error: message,
+          success: false,
+        }),
+        {
+          status,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Generic error handler
+    return new Response(
+      JSON.stringify({
+        error:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred",
         success: false,
       }),
       {
