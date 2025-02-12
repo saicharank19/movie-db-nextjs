@@ -63,7 +63,7 @@ function Sign({ from }: { from: "signin" | "signup" }) {
         {from == "signup" ? "SignUp" : "SignIn"}
       </button>
       {from == "signup" && (
-        <p>
+        <p className="text-white">
           Already registered? , Please{" "}
           <Link href={"/signin"} style={{ textDecoration: "underline" }}>
             Sign In
