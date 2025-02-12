@@ -42,9 +42,7 @@ export async function GET(
         source === "mobile"
           ? await authenticateJWT(request)
           : await getDataFromToken(request);
-      if (!authData || !("id" in authData)) {
-        throw new Error("Authentication failed: Invalid or missing user ID");
-      }
+
       userId = (authData as { id: string }).id;
     } catch (authError) {
       return new Response(
