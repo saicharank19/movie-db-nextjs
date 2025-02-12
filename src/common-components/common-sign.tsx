@@ -38,6 +38,7 @@ function Sign({ from }: { from: "signin" | "signup" }) {
         });
       }
     } catch (error) {
+      console.log(error);
       toast({
         title: "something went wrong",
       });
