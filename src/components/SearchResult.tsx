@@ -1,7 +1,7 @@
 import React from "react";
 import { Movie } from "@/types/request-body";
 
-function SearchResult({ result }) {
+function SearchResult({ result }: { result: Movie[] }) {
   return (
     <div>
       {result.map((eachResult: Movie, index) => {
