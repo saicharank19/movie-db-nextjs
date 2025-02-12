@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { authenticateJWT, getDataFromToken } from "@/helper/common-auth";
 import { getSource } from "@/helper/utils";
@@ -67,19 +67,7 @@ export async function GET(
       }
     );
 
-    return new Response(
-      JSON.stringify({
-        data: result.data,
-        success: true,
-      }),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "s-maxage=3600, stale-while-revalidate", // Add caching
-        },
-      }
-    );
+    return NextResponse.json({ movieTypeId, data: result.data, success: true });
   } catch (error) {
     // Enhanced error handling with specific error types
     if (axios.isAxiosError(error)) {
