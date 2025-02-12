@@ -4,7 +4,7 @@ import { authenticateJWT } from "@/helper/common-auth";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
     const source = request.headers.get("request");
@@ -12,7 +12,9 @@ export async function GET(
       await authenticateJWT(request); // authenticate only if the source is "mobile"
     }
 
-    const { slug } = await params; // Destructure params directly
+    const { params } = context;
+    const awaitedParams = await params; // Await the params object
+    const { slug } = awaitedParams; // Destructure params directly
     const API_KEY = process.env.API_KEY;
     // Correct API request URL with the api_key query parameter
     const result = await axios.get(
