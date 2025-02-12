@@ -6,11 +6,15 @@ import { getSource } from "@/helper/utils";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { movieTypeId: string } }
+  context: { params: Promise<{ movieTypeId: string }> }
 ) {
   try {
+    // Await the params object before destructuring
+    const { params } = context;
+    const awaitedParams = await params; // Await the params object
+    const { movieTypeId } = awaitedParams;
+
     // Validate movieTypeId parameter
-    const { movieTypeId } = await params;
     if (!movieTypeId || typeof movieTypeId !== "string") {
       return new Response(
         JSON.stringify({
@@ -38,11 +42,9 @@ export async function GET(
         source === "mobile"
           ? await authenticateJWT(request)
           : await getDataFromToken(request);
-
       if (!authData || !("id" in authData)) {
         throw new Error("Authentication failed: Invalid or missing user ID");
       }
-
       userId = (authData as { id: string }).id;
     } catch (authError) {
       return new Response(
@@ -83,10 +85,8 @@ export async function GET(
           }
         );
       }
-
       const status = error.response?.status || 500;
       const message = error.response?.data?.message || error.message;
-
       return new Response(
         JSON.stringify({
           error: message,
