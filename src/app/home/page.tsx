@@ -2,31 +2,37 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import Image from "next/image";
-import { Movie } from "@/types/request-body";
+
 import NavBar from "@/components/NavBar";
 import { useRouter } from "next/navigation";
 import HeroCarousel from "@/components/HeroCarousel";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import HeroSlideSkeleton from "@/components/skeleton/HeroSkeleton";
+import CarouselSkeleton from "@/components/skeleton/CarouselSkeleton";
+import CommonCarousel from "@/common-components/common-carousel";
+
+import { useCookies } from "react-cookie";
 
 function Home() {
   const [popularList, setPopularList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [cookie] = useCookies(["user_id"]);
   const router = useRouter();
+  const API_KEY = "500a2293d6403e9c3caedb4591ae7624";
+  const popular = "https://api.themoviedb.org/3/movie/popular";
 
   useEffect(() => {
+    if (!cookie.user_id) {
+      return router.push("/signup");
+    }
     const getPopularMovies = async () => {
       try {
-        const response = await axios.get("/api/movies/popular");
-        if (response.data.success) {
-          setPopularList(response.data.data.results);
+        const response = await axios.get(popular + `?api_key=${API_KEY}`);
+
+        if (response) {
+          setPopularList(response.data.results);
+          setLoading(false);
         } else {
-          console.log(response.data);
+          console.log(response);
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -35,6 +41,16 @@ function Home() {
       }
     };
     getPopularMovies();
+  }, [API_KEY, cookie, router]);
+
+  useEffect(() => {
+    // Simulate a 3-second loading time
+    const timer = setTimeout(() => {
+      setLoading(false); // After 3 seconds, stop loading
+    }, 3000); // 3000 ms = 3 seconds
+
+    // Cleanup timer when component unmounts
+    return () => clearTimeout(timer);
   }, []);
 
   const handleLogout = useCallback(async () => {
@@ -55,41 +71,16 @@ function Home() {
   return (
     <div>
       <NavBar />
-      <HeroCarousel slides={popularList} />
+
+      {loading ? <HeroSlideSkeleton /> : <HeroCarousel slides={popularList} />}
+
       <button onClick={handleLogout}>Logout</button>
       <div className="p-20">
-        <Carousel
-          opts={{
-            align: "start",
-          }}
-        >
-          <CarouselContent className="-ml-4">
-            {popularList.length > 0 &&
-              popularList.map((movie: Movie, id) => {
-                const imgPath =
-                  "https://image.tmdb.org/t/p/original" + movie.poster_path;
-                return (
-                  <CarouselItem key={id} className="basis-1/7">
-                    <div className="p-1">
-                      <span>
-                        <Image
-                          width={180}
-                          height={220}
-                          src={imgPath}
-                          className="rounded-2xl"
-                          alt=""
-                          blurDataURL="data:..."
-                          placeholder="blur"
-                        />
-                      </span>
-                    </div>
-                  </CarouselItem>
-                );
-              })}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+        {loading ? (
+          <CarouselSkeleton />
+        ) : (
+          <CommonCarousel movieList={popularList} />
+        )}
       </div>
     </div>
   );

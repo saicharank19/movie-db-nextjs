@@ -13,6 +13,10 @@ function Sign({ from }: { from: "signin" | "signup" }) {
   const [, setCookie] = useCookies(["user_id"]);
 
   const handleSubmit = useCallback(async () => {
+    if (!(email && password)) {
+      console.log("empty inputs");
+    }
+
     try {
       const response = await axios.post(
         from == "signup" ? "/api/user/register" : "/api/user/login",
@@ -32,10 +36,7 @@ function Sign({ from }: { from: "signin" | "signup" }) {
         }
         toast.success(response.data.message);
       } else {
-        toast({
-          variant: "destructive",
-          title: response.data.message.issues?.[0]?.message,
-        });
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.log(error);

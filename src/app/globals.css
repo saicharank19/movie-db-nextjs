@@ -153,6 +153,8 @@ body {
 @layer base {
   * {
     @apply border-border;
+    scrollbar-width: thin;
+    scrollbar-color: #2d42633d black;
   }
   body {
     @apply bg-background text-foreground;

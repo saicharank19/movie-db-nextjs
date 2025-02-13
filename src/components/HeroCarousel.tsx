@@ -61,7 +61,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
 
   return (
     <div
-      className="relative hero-slider-box h-[70vmin] w-[70vmin] mx-auto"
+      className="relative hero-slider-box h-[70vmin] w-[70vmin]  mx-auto"
       ref={slideRef}
     >
       {/* Background slides */}

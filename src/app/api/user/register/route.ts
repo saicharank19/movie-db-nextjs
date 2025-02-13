@@ -11,7 +11,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const parsedInput = await userValidationType.safeParse(body);
     if (!parsedInput.success) {
-      console.log(parsedInput.error);
       return Response.json({ message: "invalid input" });
     }
     const isUserExists = await userModel.findOne({

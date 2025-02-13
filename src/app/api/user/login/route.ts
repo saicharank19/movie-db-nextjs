@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import connectToDB from "@/dbconnect/dbconnect";
+import { z } from "zod";
 
 connectToDB();
 
@@ -11,9 +12,22 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const parsedInput = await userValidationType.safeParse(body);
-    console.log(parsedInput.data);
+    //console.log(parsedInput.data);
     if (!parsedInput.success) {
-      return Response.json({ message: parsedInput.error, success: false });
+      let errorMessage;
+      if (parsedInput.error instanceof z.ZodError) {
+        for (const issue of parsedInput.error.issues) {
+          if (issue.message === "please enter a valid email") {
+            // Handle the "already exists" error specifically
+
+            errorMessage = "please enter a valid email";
+          }
+        }
+      }
+      return Response.json({
+        message: errorMessage,
+        success: false,
+      });
     }
     const { email, password }: userInput = parsedInput.data;
     const user = await userModel.findOne({ email });
@@ -29,7 +43,7 @@ export async function POST(request: NextRequest) {
       process.env.SECRET?.toString() || ""
     );
     const response = NextResponse.json({
-      message: "user logged in successfully",
+      message: "logged in successfully",
       success: true,
       token: access_token,
       id: user._id,

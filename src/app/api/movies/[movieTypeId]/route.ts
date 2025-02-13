@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { authenticateJWT, getDataFromToken } from "@/helper/common-auth";
 import { getSource } from "@/helper/utils";
+import axiosRetry from "axios-retry";
+
+axiosRetry(axios, { retries: 3 });
 
 export async function GET(
   request: NextRequest,
@@ -14,25 +17,8 @@ export async function GET(
     const awaitedParams = await params; // Await the params object
     const { movieTypeId } = awaitedParams;
 
-    // Validate movieTypeId parameter
-    if (!movieTypeId || typeof movieTypeId !== "string") {
-      return new Response(
-        JSON.stringify({
-          error: "Invalid movieTypeId parameter",
-          success: false,
-        }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    }
-
     // Validate API key
-    const API_KEY = process.env.API_KEY;
-    if (!API_KEY) {
-      throw new Error("API_KEY environment variable is not configured");
-    }
+    const API_KEY = await process.env.API_KEY;
 
     // Authentication with better error handling
     let userId: string;
@@ -44,6 +30,7 @@ export async function GET(
           : await getDataFromToken(request);
 
       userId = (authData as { id: string }).id;
+      console.log(userId);
     } catch (authError) {
       return new Response(
         JSON.stringify({
@@ -56,20 +43,15 @@ export async function GET(
         }
       );
     }
-
-    // Make API request with timeout and proper error handling
+    console.log(API_KEY);
     const result = await axios.get(
-      `https://api.themoviedb.org/3/movie/${movieTypeId}`,
-      {
-        params: { api_key: API_KEY },
-        timeout: 5000, // 5 second timeout
-        validateStatus: (status) => status === 200, // Only accept 200 status
-      }
+      `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
     );
 
     return NextResponse.json({ movieTypeId, data: result.data, success: true });
   } catch (error) {
     // Enhanced error handling with specific error types
+    console.log(error);
     if (axios.isAxiosError(error)) {
       if (error.code === "ECONNABORTED") {
         return new Response(

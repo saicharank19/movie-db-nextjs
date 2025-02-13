@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
       success: true,
     });
     response.cookies.delete("token");
+    response.cookies.delete("user_id");
     return response;
   } catch (error) {
     if (error instanceof Error) {
