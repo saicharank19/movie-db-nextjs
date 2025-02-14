@@ -14,11 +14,17 @@ import { useCookies } from "react-cookie";
 
 function Home() {
   const [popularList, setPopularList] = useState([]);
+  const [upcomingList, setUpcomingList] = useState([]);
+  const [topRatedList, setTopRatedList] = useState([]);
+  //const [todayTrendingList, setTodayTrendingList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cookie] = useCookies(["user_id"]);
   const router = useRouter();
   const API_KEY = "500a2293d6403e9c3caedb4591ae7624";
   const popular = "https://api.themoviedb.org/3/movie/popular";
+  const upcoming = "https://api.themoviedb.org/3/movie/upcoming";
+  const topRated = "https://api.themoviedb.org/3/movie/top_rated";
+  //const todayTrending = "https://api.themoviedb.org/3/trending/movie/day";
 
   useEffect(() => {
     if (!cookie.user_id) {
@@ -26,13 +32,18 @@ function Home() {
     }
     const getPopularMovies = async () => {
       try {
-        const response = await axios.get(popular + `?api_key=${API_KEY}`);
+        const response1 = await axios.get(popular + `?api_key=${API_KEY}`);
+        const response2 = await axios.get(upcoming + `?api_key=${API_KEY}`);
+        const response3 = await axios.get(topRated + `?api_key=${API_KEY}`);
 
-        if (response) {
-          setPopularList(response.data.results);
+        if (response1) {
+          setPopularList(response1.data.results);
+          setUpcomingList(response2.data.results);
+          setTopRatedList(response3.data.results);
+          //setTodayTrendingList(response4.data.results);
           setLoading(false);
         } else {
-          console.log(response);
+          console.log(response1);
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -75,11 +86,35 @@ function Home() {
       {loading ? <HeroSlideSkeleton /> : <HeroCarousel slides={popularList} />}
 
       <button onClick={handleLogout}>Logout</button>
+      {/* <div className="p-20">
+        {loading ? (
+          <CarouselSkeleton />
+        ) : (
+          <CommonCarousel
+            movieList={todayTrendingList}
+            title={"Today Trending Movies"}
+          />
+        )}
+      </div> */}
       <div className="p-20">
         {loading ? (
           <CarouselSkeleton />
         ) : (
-          <CommonCarousel movieList={popularList} />
+          <CommonCarousel movieList={popularList} title={"Popular Movies"} />
+        )}
+      </div>
+      <div className="p-20">
+        {loading ? (
+          <CarouselSkeleton />
+        ) : (
+          <CommonCarousel movieList={upcomingList} title={"Upcoming Movies"} />
+        )}
+      </div>
+      <div className="p-20">
+        {loading ? (
+          <CarouselSkeleton />
+        ) : (
+          <CommonCarousel movieList={topRatedList} title={"Top Rated Movies"} />
         )}
       </div>
     </div>

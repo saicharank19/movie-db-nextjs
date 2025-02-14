@@ -124,7 +124,7 @@ body {
   }
   .dark {
     --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
+    --foreground: white;
     --card: 224 71.4% 4.1%;
     --card-foreground: 210 20% 98%;
     --popover: 224 71.4% 4.1%;
@@ -157,6 +157,7 @@ body {
     scrollbar-color: #2d42633d black;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background;
+    color: var(--foreground);
   }
 }

@@ -10,9 +10,16 @@ import React from "react";
 import Image from "next/image";
 import { Movie } from "@/types/request-body";
 
-function CommonCarousel({ movieList }: { movieList: Movie[] }) {
+function CommonCarousel({
+  movieList,
+  title,
+}: {
+  movieList: Movie[];
+  title: string;
+}) {
   return (
     <div>
+      <h3>{title}</h3>
       <Carousel
         opts={{
           align: "start",
