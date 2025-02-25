@@ -93,6 +93,28 @@ body {
   display: flex;
   justify-content: space-between;
 }
+.glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0)
+  );
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgb(251, 251, 251);
+}
+
+.detail-bg ::after {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  border: 2px solid red;
+  color: #050505;
+}
 
 @layer base {
   :root {

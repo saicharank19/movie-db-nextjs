@@ -4,7 +4,7 @@ import { authenticateJWT } from "@/helper/common-auth";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const source = await request.headers.get("request");
@@ -15,7 +15,7 @@ export async function GET(
     const result = await axios.get(
       `https://api.themoviedb.org/3/movie/${id}?api_key=500a2293d6403e9c3caedb4591ae7624`
     );
-    console.log(result);
+
     return Response.json({ data: result.data, success: true });
   } catch (error) {
     if (error instanceof Error) {

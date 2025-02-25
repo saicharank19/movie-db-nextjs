@@ -1,8 +1,9 @@
 import type React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Movie } from "@/types/request-body";
+import { useRouter } from "next/navigation";
 
 const imageLoaded = (event: React.SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.style.opacity = "1";
@@ -23,7 +24,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [, setSlideDirection] = useState<"left" | "right">("right");
   const slideRef = useRef<HTMLDivElement>(null);
-  // const autoPlayRef = useRef<NodeJS.Timeout>();
+  const router = useRouter();
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -55,6 +56,19 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
     setSlideDirection("right");
   };
+
+  const handleMovieDetails = useCallback(
+    async (id: string) => {
+      try {
+        return router.push(`/details/${id}`);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log(error);
+        }
+      }
+    },
+    [router]
+  );
 
   const defaultImagePath = "/images/default-movie-poster.jpg";
   const adjacentSlides = getAdjacentSlides(currentSlide, slides);
@@ -91,7 +105,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
       </div>
 
       {/* Main slides */}
-      <div className="relative overflow-hidden rounded-lg h-full [perspective:1200px] [transform-style:preserve-3d]">
+      <div className="relative  overflow-hidden rounded-lg h-full [perspective:1200px] [transform-style:preserve-3d]">
         {slides.map((slide, index) => {
           const isCurrentSlide = index === currentSlide;
           const isPrevSlide =
@@ -100,6 +114,8 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
 
           return (
             <div
+              onMouseEnter={() => setIsAutoPlaying(false)}
+              onMouseLeave={() => setIsAutoPlaying(true)}
               key={slide?.id || index}
               className={`absolute w-full h-full transform transition-all duration-300 ease-in-out
               ${
@@ -113,11 +129,13 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
               }`}
               style={{
                 perspective: "1000px",
-                transformStyle: "preserve-3d",
                 transformOrigin: "bottom",
               }}
             >
-              <div className="relative w-full h-full">
+              <div
+                className="relative w-full h-full"
+                onClick={() => handleMovieDetails(slide.id)}
+              >
                 <Image
                   src={
                     slide?.backdrop_path
@@ -128,8 +146,9 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
                   layout="fill"
                   objectFit="cover"
                   priority={isCurrentSlide}
-                  className="transition-opacity duration-600 ease-in-out rounded-3xl main-slide-img"
+                  className=" transition-opacity duration-600 ease-in-out rounded-3xl main-slide-img"
                   style={{
+                    transformStyle: "preserve-3d",
                     opacity: isCurrentSlide ? 1 : 0.5,
                     transform: isCurrentSlide
                       ? "translate3d(calc(var(--x) / 30), calc(var(--y) / 30), 0)"

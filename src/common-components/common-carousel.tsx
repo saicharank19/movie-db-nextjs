@@ -6,9 +6,10 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import React from "react";
+import React, { useCallback } from "react";
 import Image from "next/image";
 import { Movie } from "@/types/request-body";
+import { useRouter } from "next/navigation";
 
 function CommonCarousel({
   movieList,
@@ -17,6 +18,13 @@ function CommonCarousel({
   movieList: Movie[];
   title: string;
 }) {
+  const router = useRouter();
+  const handleMovieDetails = useCallback(
+    async (id: string) => {
+      return router.push(`/details/${id}`);
+    },
+    [router]
+  );
   return (
     <div>
       <h3>{title}</h3>
@@ -31,7 +39,11 @@ function CommonCarousel({
               const imgPath =
                 "https://image.tmdb.org/t/p/original" + movie.poster_path;
               return (
-                <CarouselItem key={id} className="basis-1/7">
+                <CarouselItem
+                  key={id}
+                  className="basis-1/7"
+                  onClick={() => handleMovieDetails(movie.id)}
+                >
                   <div className="p-1">
                     <span>
                       <Image

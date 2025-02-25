@@ -1,9 +1,7 @@
 "use client";
 import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import React, { useEffect, useState } from "react";
 
-import NavBar from "@/components/NavBar";
 import { useRouter } from "next/navigation";
 import HeroCarousel from "@/components/HeroCarousel";
 import HeroSlideSkeleton from "@/components/skeleton/HeroSkeleton";
@@ -64,38 +62,10 @@ function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleLogout = useCallback(async () => {
-    try {
-      const response = await axios.post("/api/user/logout");
-      console.log(response.data.success);
-      if (response.data.success) {
-        toast.success(response.data.message);
-        router.push("/signin");
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error);
-      }
-    }
-  }, [router]);
-
   return (
     <div>
-      <NavBar />
-
       {loading ? <HeroSlideSkeleton /> : <HeroCarousel slides={popularList} />}
 
-      <button onClick={handleLogout}>Logout</button>
-      {/* <div className="p-20">
-        {loading ? (
-          <CarouselSkeleton />
-        ) : (
-          <CommonCarousel
-            movieList={todayTrendingList}
-            title={"Today Trending Movies"}
-          />
-        )}
-      </div> */}
       <div className="p-20">
         {loading ? (
           <CarouselSkeleton />

@@ -1,7 +1,11 @@
-import React, { useCallback, useState } from "react";
-import { Search, User } from "lucide-react";
+"use client";
+
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Search, User, Menu, LogOut } from "lucide-react";
 import axios from "axios";
 import SearchResult from "./SearchResult";
+import { useRouter, usePathname } from "next/navigation";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -9,7 +13,34 @@ const Navbar = () => {
   const [isTvShowsDropdownOpen, setIsTvShowsDropdownOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState([]);
+  const [showSearchResult, setShowSearchResult] = useState(false);
+  const pathName = usePathname();
+  const noNav = ["/signin", "/signup"];
+  const router = useRouter();
 
+  const searchResultRef = useRef(null);
+
+  // Handle clicks outside the search results
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchResultRef.current &&
+        !searchResultRef.current.contains(event.target as Node)
+      ) {
+        setShowSearchResult(false); // Hide search results
+      }
+    };
+
+    // Add event listener to detect clicks outside
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Handle search functionality
   const handleSearchResult = useCallback(
     async (input: string) => {
       try {
@@ -18,6 +49,7 @@ const Navbar = () => {
 
         if (response.data.success) {
           setSearchResult(response.data.data.results);
+          setShowSearchResult(true);
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -28,13 +60,31 @@ const Navbar = () => {
     [searchInput]
   );
 
+  const handleLogout = useCallback(async () => {
+    try {
+      const response = await axios.post("/api/user/logout");
+      console.log(response.data.success);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        router.push("/signin");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error);
+      }
+    }
+  }, [router]);
+  // Dropdown and mobile menu styles
   const dropdownClasses =
     "z-40 absolute left-0 font-normal bg-black divide-y divide-gray-700 rounded-lg shadow w-44 border border-white/20";
   const dropdownItemClasses =
     "block px-4 py-2 text-white hover:text-[#2d4263] hover:bg-white transition-colors duration-200";
 
-  return (
+  console.log(showSearchResult);
+
+  return noNav.includes(pathName) ? null : (
     <nav className="bg-black">
+      {/* Container */}
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
         {/* Logo */}
         <a href="#" className="flex items-center space-x-3">
@@ -49,7 +99,7 @@ const Navbar = () => {
             {/* Home */}
             <li>
               <a
-                href="#"
+                href="/home"
                 className="block py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
               >
                 Home
@@ -59,12 +109,8 @@ const Navbar = () => {
             {/* Movies Dropdown */}
             <li
               className="relative"
-              onMouseEnter={() =>
-                setIsMoviesDropdownOpen(!isMoviesDropdownOpen)
-              }
-              onMouseLeave={() =>
-                setIsMoviesDropdownOpen(!isMoviesDropdownOpen)
-              }
+              onMouseEnter={() => setIsMoviesDropdownOpen(true)}
+              onMouseLeave={() => setIsMoviesDropdownOpen(false)}
             >
               <button className="flex items-center w-full py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200">
                 Movies
@@ -115,12 +161,8 @@ const Navbar = () => {
             {/* TV Shows Dropdown */}
             <li
               className="relative"
-              onMouseEnter={() =>
-                setIsTvShowsDropdownOpen(!isTvShowsDropdownOpen)
-              }
-              onMouseLeave={() =>
-                setIsTvShowsDropdownOpen(!isTvShowsDropdownOpen)
-              }
+              onMouseEnter={() => setIsTvShowsDropdownOpen(true)}
+              onMouseLeave={() => setIsTvShowsDropdownOpen(false)}
             >
               <button className="flex items-center w-full py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200">
                 TV Shows
@@ -183,196 +225,143 @@ const Navbar = () => {
               <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
             </div>
             <div className="search-result">
-              {searchResult.length > 0 && searchInput !== "" ? (
-                <SearchResult result={searchResult} />
+              {showSearchResult &&
+              searchResult.length > 0 &&
+              searchInput !== "" ? (
+                <div ref={searchResultRef}>
+                  <SearchResult result={searchResult} />
+                </div>
               ) : (
                 ""
               )}
             </div>
           </div>
-
           <button className="text-white hover:text-[#2d4263] transition-colors duration-200">
             <User className="h-6 w-6" />
           </button>
+          <button
+            className="text-white hover:text-[#2d4263] transition-colors duration-200"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-6 w-6" />
+          </button>
         </div>
 
-        {/* Mobile Menu Button - Moved to right */}
+        {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="md:hidden inline-flex items-center p-2 w-10 h-10 justify-center text-white rounded-lg hover:bg-[#2d4263] focus:outline-none focus:ring-2 focus:ring-white"
         >
-          <span className="sr-only">Open main menu</span>
-          <svg
-            className="w-5 h-5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 17 14"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M1 1h15M1 7h15M1 13h15"
-            />
-          </svg>
+          <Menu className="h-6 w-6" />
         </button>
+      </div>
 
-        {/* Mobile Menu */}
-        <div
-          className={`${
-            isMobileMenuOpen ? "block" : "hidden"
-          } absolute top-16 left-0 right-0 bg-black md:hidden z-40`}
-        >
-          <ul className="flex flex-col font-medium p-4">
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
+      {/* Mobile Menu */}
+      <div className={`${isMobileMenuOpen ? "block" : "hidden"} md:hidden`}>
+        <ul className="flex flex-col font-medium p-4 bg-black">
+          <li>
+            <a
+              href="/home"
+              className="block py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
+            >
+              Home
+            </a>
+          </li>
+          <li>
+            <button
+              onClick={() => setIsMoviesDropdownOpen(!isMoviesDropdownOpen)}
+              className="flex items-center w-full py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
+            >
+              Movies
+              <svg
+                className="w-2.5 h-2.5 ms-2.5"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
               >
-                Home
-              </a>
-            </li>
-            <li>
-              <button
-                onClick={() => setIsMoviesDropdownOpen(!isMoviesDropdownOpen)}
-                className="flex items-center w-full py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
-              >
-                Movies
-                <svg
-                  className="w-2.5 h-2.5 ms-2.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 10 6"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 1 4 4 4-4"
-                  />
-                </svg>
-              </button>
-              {isMoviesDropdownOpen && (
-                <ul className="pl-6">
-                  <li>
-                    <a
-                      href="#"
-                      className="block py-2 text-white hover:text-[#2d4263]"
-                    >
-                      Popular
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block py-2 text-white hover:text-[#2d4263]"
-                    >
-                      Now Playing
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block py-2 text-white hover:text-[#2d4263]"
-                    >
-                      Upcoming
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block py-2 text-white hover:text-[#2d4263]"
-                    >
-                      Top Rated
-                    </a>
-                  </li>
-                </ul>
-              )}
-            </li>
-            <li>
-              <button
-                onClick={() => setIsTvShowsDropdownOpen(!isTvShowsDropdownOpen)}
-                className="flex items-center w-full py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
-              >
-                TV Shows
-                <svg
-                  className="w-2.5 h-2.5 ms-2.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 10 6"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 1 4 4 4-4"
-                  />
-                </svg>
-              </button>
-              {isTvShowsDropdownOpen && (
-                <ul className="pl-6">
-                  <li>
-                    <a
-                      href="#"
-                      className="block py-2 text-white hover:text-[#2d4263]"
-                    >
-                      Popular
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block py-2 text-white hover:text-[#2d4263]"
-                    >
-                      Airing Today
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block py-2 text-white hover:text-[#2d4263]"
-                    >
-                      On TV
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block py-2 text-white hover:text-[#2d4263]"
-                    >
-                      Top Rated
-                    </a>
-                  </li>
-                </ul>
-              )}
-            </li>
-            <li>
-              <div className="py-2 px-3">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  onChange={(e) => handleSearchResult(e.target.value)}
-                  className="w-full bg-black text-white border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-[#2d4263] placeholder-gray-400"
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m1 1 4 4 4-4"
                 />
-              </div>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
+              </svg>
+            </button>
+            {isMoviesDropdownOpen && (
+              <ul className="py-2 pl-4">
+                <li>
+                  <a href="#" className={dropdownItemClasses}>
+                    Popular
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className={dropdownItemClasses}>
+                    Now Playing
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className={dropdownItemClasses}>
+                    Upcoming
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className={dropdownItemClasses}>
+                    Top Rated
+                  </a>
+                </li>
+              </ul>
+            )}
+          </li>
+          <li>
+            <button
+              onClick={() => setIsTvShowsDropdownOpen(!isTvShowsDropdownOpen)}
+              className="flex items-center w-full py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
+            >
+              TV Shows
+              <svg
+                className="w-2.5 h-2.5 ms-2.5"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
               >
-                <User className="h-5 w-5 mr-2" />
-                Profile
-              </a>
-            </li>
-          </ul>
-        </div>
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m1 1 4 4 4-4"
+                />
+              </svg>
+            </button>
+            {isTvShowsDropdownOpen && (
+              <ul className="py-2 pl-4">
+                <li>
+                  <a href="#" className={dropdownItemClasses}>
+                    Popular
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className={dropdownItemClasses}>
+                    Airing Today
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className={dropdownItemClasses}>
+                    On TV
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className={dropdownItemClasses}>
+                    Top Rated
+                  </a>
+                </li>
+              </ul>
+            )}
+          </li>
+        </ul>
       </div>
     </nav>
   );

@@ -1,9 +1,9 @@
-import SignUp from "./signup/page";
+"use client";
+
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div>
-      <SignUp />
-    </div>
-  );
+  const router = useRouter();
+  router.push("/signup");
+  return <div></div>;
 }
