@@ -11,19 +11,38 @@ function Recommendation({ movieId }: { movieId: string | undefined }) {
   useEffect(() => {
     const getRecommendations = async () => {
       try {
-        const recommendationDetails = await axios.get(
-          `/api/movies/recommendation/${movieId}`
-        );
-        if (recommendationDetails.data) {
-          // Ensure the data matches the Movie type
-          setRecommendedList(recommendationDetails.data.data.results);
+        // Check if recommendations are cached in localStorage
+        const cachedData = localStorage.getItem(`recommendations-${movieId}`);
+        if (cachedData) {
+          // Use cached data if available
+          setRecommendedList(JSON.parse(cachedData));
+        } else {
+          // Fetch recommendations from the API if not cached
+          const recommendationDetails = await axios.get(
+            `/api/movies/recommendation/${movieId}`
+          );
+          if (
+            recommendationDetails.data &&
+            recommendationDetails.data.data.results
+          ) {
+            // Update state with fetched data
+            const results = recommendationDetails.data.data.results;
+            setRecommendedList(results);
+
+            // Cache the fetched data in localStorage
+            localStorage.setItem(
+              `recommendations-${movieId}`,
+              JSON.stringify(results)
+            );
+          }
         }
       } catch (error) {
         if (error instanceof Error) {
-          console.log(error.message);
+          console.error("Error fetching recommendations:", error.message);
         }
       }
     };
+
     getRecommendations();
   }, [movieId]);
 

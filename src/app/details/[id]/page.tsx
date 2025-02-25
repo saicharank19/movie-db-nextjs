@@ -6,7 +6,6 @@ import { Movie } from "@/types/request-body"; // Import the Movie type
 import Image from "next/image";
 import Recommendation from "@/components/ui/Recommendation";
 
-
 function MovieDetails() {
   const params = useParams();
   const movieId = params.id;
@@ -36,7 +35,8 @@ function MovieDetails() {
             console.error("No data received from the API");
           }
         } catch (error) {
-          console.error("Error fetching movie details:", error.message);
+          if (error instanceof Error)
+            console.error("Error fetching movie details:", error.message);
         } finally {
           setLoading(false);
         }
@@ -72,7 +72,6 @@ function MovieDetails() {
     <div>loading</div>
   ) : (
     <div>
-      
       <div
         className="detail-bg"
         style={{

@@ -18,7 +18,7 @@ const Navbar = () => {
   const noNav = ["/signin", "/signup"];
   const router = useRouter();
 
-  const searchResultRef = useRef(null);
+  const searchResultRef = useRef<HTMLDivElement | null>(null);
 
   // Handle clicks outside the search results
   useEffect(() => {
@@ -80,14 +80,12 @@ const Navbar = () => {
   const dropdownItemClasses =
     "block px-4 py-2 text-white hover:text-[#2d4263] hover:bg-white transition-colors duration-200";
 
-  console.log(showSearchResult);
-
   return noNav.includes(pathName) ? null : (
     <nav className="bg-black">
       {/* Container */}
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
         {/* Logo */}
-        <a href="#" className="flex items-center space-x-3">
+        <a href="/home" className="flex items-center space-x-3">
           <span className="text-2xl font-bold text-white hover:text-[#2d4263] transition-colors duration-200">
             BRAND
           </span>
