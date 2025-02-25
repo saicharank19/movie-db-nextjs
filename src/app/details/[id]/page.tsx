@@ -96,7 +96,7 @@ function MovieDetails() {
           <div className="pl-6 place-self-start">
             <h1 className=" text-5xl font-extrabold mb-4">{title}</h1>
             <div className="flex justify-between w-[50%] mb-4">
-              <p>{formatDuration(runtime)}</p>
+              <p>{runtime !== undefined ? formatDuration(runtime) : runtime}</p>
               <p>{release_date}</p>
               {genres?.map((each) => {
                 return <p key={each.id}>{each.name}</p>;
