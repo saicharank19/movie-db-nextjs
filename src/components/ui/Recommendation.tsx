@@ -55,7 +55,7 @@ function Recommendation({ movieId }: { movieId: string | undefined }) {
 
   return (
     <div>
-      <h1>Recommendation</h1>
+      <h1 className="font-semibold mb-4">Recommendation</h1>
       <div className="flex w-full overflow-scroll">
         {recommendedList.map((eachMovie: Movie) => {
           const { original_title, poster_path } = eachMovie;

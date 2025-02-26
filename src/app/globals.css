@@ -3,8 +3,9 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Roboto";
   background: rgb(0, 0, 0);
+  box-sizing: border-box;
 }
 
 .common-sign-box {
@@ -57,9 +58,10 @@ body {
 .common-sign-box button {
   margin-bottom: 1.5rem;
   background-color: #2d4263;
+  backdrop-filter: blur(10px);
   width: 8rem;
   height: 2.5rem;
-  border-radius: 0.2rem;
+  border-radius: 1rem;
 }
 
 .hero-slider-box {
@@ -67,9 +69,7 @@ body {
   width: 75%;
   height: 500px;
 }
-/* .main-slide-img {
-  border: 3px solid #2d4263;
-} */
+
 .background-slider {
   height: 400px;
   width: 30%;
@@ -103,17 +103,6 @@ body {
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 8px 32px 0 rgb(251, 251, 251);
-}
-
-.detail-bg ::after {
-  position: absolute;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  width: 100px;
-  height: 100px;
-  border: 2px solid red;
-  color: #050505;
 }
 
 @layer base {

@@ -27,7 +27,7 @@ function CommonCarousel({
   );
   return (
     <div>
-      <h3>{title}</h3>
+      <h3 className="p-2 md:pl-2 font-[650]">{title}</h3>
       <Carousel
         opts={{
           align: "start",
@@ -44,7 +44,7 @@ function CommonCarousel({
                   className="basis-1/7"
                   onClick={() => handleMovieDetails(movie.id)}
                 >
-                  <div className="p-1">
+                  <div className="movieCard">
                     <span>
                       <Image
                         width={180}
@@ -61,8 +61,8 @@ function CommonCarousel({
               );
             })}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        {window.innerWidth > 640 && <CarouselPrevious />}
+        {window.innerWidth > 640 && <CarouselNext />}
       </Carousel>
     </div>
   );

@@ -74,10 +74,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
   const adjacentSlides = getAdjacentSlides(currentSlide, slides);
 
   return (
-    <div
-      className="relative hero-slider-box h-[70vmin] w-[70vmin]  mx-auto"
-      ref={slideRef}
-    >
+    <div className="relative hero-slider-box" ref={slideRef}>
       {/* Background slides */}
       <div className="absolute inset-0 flex justify-between w-full">
         {adjacentSlides.map((slide, index) => (
@@ -87,7 +84,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
               index === 0 ? "-translate-x-1/2" : "translate-x-1/2"
             }`}
           >
-            <div className="relative w-full h-full rounded-xl overflow-hidden">
+            <div className="relative w-full h-[40%] md:w-full md:h-full rounded-xl overflow-hidden">
               <Image
                 src={
                   slide?.backdrop_path
@@ -105,7 +102,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
       </div>
 
       {/* Main slides */}
-      <div className="relative  overflow-hidden rounded-lg h-full [perspective:1200px] [transform-style:preserve-3d]">
+      <div className="relative  overflow-hidden rounded-lg h-[300px] md:h-full [perspective:1200px] [transform-style:preserve-3d]">
         {slides.map((slide, index) => {
           const isCurrentSlide = index === currentSlide;
           const isPrevSlide =
@@ -142,7 +139,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
                       ? `https://image.tmdb.org/t/p/original${slide.backdrop_path}`
                       : defaultImagePath
                   }
-                  alt={slide?.original_title || "Movie poster"}
+                  alt={slide?.title || "Movie poster"}
                   layout="fill"
                   objectFit="cover"
                   priority={isCurrentSlide}
@@ -159,11 +156,11 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
                 {/* Content overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
                   <div className="absolute bottom-5 left-0 p-8">
-                    <h2 className="text-4xl font-bold text-white mb-2">
-                      {slide?.original_title || "Untitled"}
+                    <h2 className="text-xl md:text-4xl font-bold text-white mb-2">
+                      {slide?.title || "Untitled"}
                     </h2>
                     {slide?.overview && (
-                      <p className="text-gray-200 max-w-xl line-clamp-2">
+                      <p className="text-sm md:text-lg text-gray-200 max-w-xl line-clamp-2">
                         {slide.overview}
                       </p>
                     )}
@@ -176,7 +173,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
       </div>
 
       {/* Slide indicators */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+      <div className="hidden md:flex absolute bottom-4 left-1/2 -translate-x-1/2  space-x-2">
         {slides.map((_, index) => (
           <div
             key={index}
@@ -188,12 +185,12 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
       </div>
 
       {/* Navigation buttons */}
-      <div className="absolute top-1/2 left-4 -translate-y-1/2">
+      <div className="absolute top-1/4 left-4  md:top-1/2 md:left-4 -translate-y-1/2">
         <button onClick={handlePrev} className="p-2 rounded-full bg-white/30">
           <ChevronLeft className="w-6 h-6 text-white" />
         </button>
       </div>
-      <div className="absolute top-1/2 right-4 -translate-y-1/2">
+      <div className="absolute top-1/4 right-4 md:top-1/2 md:right-4 -translate-y-1/2">
         <button onClick={handleNext} className="p-2 rounded-full bg-white/30">
           <ChevronRight className="w-6 h-6 text-white" />
         </button>

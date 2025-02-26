@@ -73,45 +73,42 @@ function MovieDetails() {
   ) : (
     <div>
       <div
-        className="detail-bg"
+        className=" detail-bg"
         style={{
           width: "100%",
-          height: "100vh",
+          height: "auto",
           backgroundSize: "cover", // Ensures the image covers the entire div
-          //backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.86) 0%, rgba(0, 0, 0, 0) 100%), url(https://image.tmdb.org/t/p/original${backdrop_path})`,
-          backgroundImage: `url(https://image.tmdb.org/t/p/original${backdrop_path})`,
-          backgroundPosition: "center", // Centers the image
-          backgroundRepeat: "no-repeat", // Prevents the image from repeating
+          backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.86) 0%, rgba(0, 0, 0, 0) 100%), url(https://image.tmdb.org/t/p/original${backdrop_path})`,
         }}
       >
         <div className="flex p-4 place-items-center">
           <Image
-            className="rounded-2xl"
+            className="h-[250px] md:h-full rounded-2xl"
             src={`https://image.tmdb.org/t/p/original${poster_path}`}
             width={300}
             height={400}
             style={{ objectFit: "contain" }}
             alt={original_title || "Movie Poster"}
           />
-          <div className="pl-6 place-self-start">
-            <h1 className=" text-5xl font-extrabold mb-4">{title}</h1>
-            <div className="flex justify-between w-[50%] mb-4">
+          <div className="pl-6 place-self-start overflow-hidden">
+            <h1 className="md:text-5xl font-extrabold mb-4">{title}</h1>
+            <div className="flex flex-wrap justify-between md:w-[50%] mb-4 text-sm md:text-medium">
               <p>{runtime !== undefined ? formatDuration(runtime) : runtime}</p>
               <p>{release_date}</p>
               {genres?.map((each) => {
                 return <p key={each.id}>{each.name}</p>;
               })}
             </div>
-            <p className="mb-4">{tagline}</p>
+            <p className="text-sm mb-4">{tagline}</p>
             <div>
               <h3 className="font-semibold">Overview</h3>
-              <p className="w-[80%]">{overview}</p>
+              <p className="text-sm w-[80%]">{overview}</p>
             </div>
           </div>
         </div>
       </div>
       <div></div>
-      <div className="w-[90%] p-4">
+      <div className="md:w-[90%] p-4">
         <Recommendation movieId={id} />
       </div>
     </div>

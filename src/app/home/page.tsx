@@ -64,23 +64,29 @@ function Home() {
 
   return (
     <div>
-      {loading ? <HeroSlideSkeleton /> : <HeroCarousel slides={popularList} />}
+      <section className="h-[300px] md:h-full">
+        {loading ? (
+          <HeroSlideSkeleton />
+        ) : (
+          <HeroCarousel slides={popularList} />
+        )}
+      </section>
 
-      <div className="p-20">
+      <div className="mt-8 mb-8 md:pr-20 md:pl-20">
         {loading ? (
           <CarouselSkeleton />
         ) : (
           <CommonCarousel movieList={popularList} title={"Popular Movies"} />
         )}
       </div>
-      <div className="p-20">
+      <div className="mt-8 mb-8 md:pr-20 md:pl-20">
         {loading ? (
           <CarouselSkeleton />
         ) : (
           <CommonCarousel movieList={upcomingList} title={"Upcoming Movies"} />
         )}
       </div>
-      <div className="p-20">
+      <div className="mt-8 mb-8 md:pr-20 md:pl-20">
         {loading ? (
           <CarouselSkeleton />
         ) : (
