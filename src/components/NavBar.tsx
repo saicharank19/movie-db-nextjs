@@ -254,7 +254,7 @@ const Navbar = () => {
             <Menu className="h-6 w-6" />
           </button>
           <button
-            className="text-white hover:text-[#2d4263] transition-colors duration-200"
+            className="md:hidden text-white hover:text-[#2d4263] transition-colors duration-200"
             onClick={handleLogout}
           >
             <LogOut className="h-6 w-6" />
