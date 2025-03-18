@@ -246,12 +246,20 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden inline-flex items-center p-2 w-10 h-10 justify-center text-white rounded-lg hover:bg-[#2d4263] focus:outline-none focus:ring-2 focus:ring-white"
-        >
-          <Menu className="h-6 w-6" />
-        </button>
+        <div>
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="mr-3 md:hidden inline-flex items-center p-2 w-10 h-10 justify-center text-white rounded-lg hover:bg-[#2d4263] focus:outline-none focus:ring-2 focus:ring-white"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+          <button
+            className="text-white hover:text-[#2d4263] transition-colors duration-200"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-6 w-6" />
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
