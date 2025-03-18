@@ -69,7 +69,7 @@ function MovieDetails() {
   }
 
   return loading ? (
-    <div>loading</div>
+    <div className="loader"></div>
   ) : (
     <div>
       <div
@@ -108,7 +108,7 @@ function MovieDetails() {
         </div>
       </div>
       <div></div>
-      <div className="md:w-[90%] p-4">
+      <div className="md:w-[100%] p-4">
         <Recommendation movieId={id} />
       </div>
     </div>

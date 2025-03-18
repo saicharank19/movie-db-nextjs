@@ -11,6 +11,7 @@ function Sign({ from }: { from: "signin" | "signup" }) {
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
   const [, setCookie] = useCookies(["user_id"]);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = useCallback(async () => {
     if (!(email && password)) {
@@ -18,6 +19,7 @@ function Sign({ from }: { from: "signin" | "signup" }) {
     }
 
     try {
+      setLoading(true);
       const response = await axios.post(
         from == "signup" ? "/api/user/register" : "/api/user/login",
         {
@@ -43,34 +45,41 @@ function Sign({ from }: { from: "signin" | "signup" }) {
       toast({
         title: "something went wrong",
       });
+    } finally {
+      setLoading(false);
     }
   }, [from, email, password, setCookie, router]);
+  console.log(loading);
   return (
     <div className="common-sign-box">
-      <h1>{from == "signup" ? "Sign Up" : "Sign In"}</h1>
-      <div className="user-box">
-        <input onChange={(e) => setEmail(e.target.value)} />
-        {email ? "" : <label>Email</label>}
+      {loading && <div className="loader"></div>}
+
+      <div style={{ opacity: loading ? "0.5" : "" }}>
+        <h1>{from == "signup" ? "Sign Up" : "Sign In"}</h1>
+        <div className="user-box">
+          <input onChange={(e) => setEmail(e.target.value)} />
+          {email ? "" : <label>Email</label>}
+        </div>
+        <div className="user-box">
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-80 m-2"
+            type="password"
+          />
+          {password ? "" : <label>Password</label>}
+        </div>
+        <button onClick={handleSubmit} className="w-80 m-2 sign-btn">
+          {from == "signup" ? "SignUp" : "SignIn"}
+        </button>
+        {from == "signup" && (
+          <p className="text-white">
+            Already registered? , Please{" "}
+            <Link href={"/signin"} style={{ textDecoration: "underline" }}>
+              Sign In
+            </Link>
+          </p>
+        )}
       </div>
-      <div className="user-box">
-        <input
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-80 m-2"
-          type="password"
-        />
-        {password ? "" : <label>Password</label>}
-      </div>
-      <button onClick={handleSubmit} className="w-80 m-2 sign-btn">
-        {from == "signup" ? "SignUp" : "SignIn"}
-      </button>
-      {from == "signup" && (
-        <p className="text-white">
-          Already registered? , Please{" "}
-          <Link href={"/signin"} style={{ textDecoration: "underline" }}>
-            Sign In
-          </Link>
-        </p>
-      )}
     </div>
   );
 }
