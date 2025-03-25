@@ -40,6 +40,9 @@ const Navbar = () => {
     };
   }, []);
 
+  const closeSearchResults = () => {
+    setShowSearchResult(false);
+  };
   // Handle search functionality
   const handleSearchResult = useCallback(
     async (input: string) => {
@@ -78,7 +81,7 @@ const Navbar = () => {
   const dropdownClasses =
     "z-40 absolute left-0 font-normal bg-black divide-y divide-gray-700 rounded-lg shadow w-44 border border-white/20";
   const dropdownItemClasses =
-    "block px-4 py-2 text-white hover:text-[#2d4263] hover:bg-white transition-colors duration-200";
+    "block px-4 py-2 text-white hover:text-[#6a11cb] hover:bg-white transition-colors duration-200";
 
   return noNav.includes(pathName) ? null : (
     <nav className="bg-black">
@@ -86,7 +89,7 @@ const Navbar = () => {
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
         {/* Logo */}
         <a href="/home" className="flex items-center space-x-3">
-          <span className="text-2xl font-bold text-white hover:text-[#2d4263] transition-colors duration-200">
+          <span className="text-2xl font-bold text-white hover:text-[#6a11cb] transition-colors duration-200">
             BRAND
           </span>
         </a>
@@ -98,7 +101,7 @@ const Navbar = () => {
             <li>
               <a
                 href="/home"
-                className="block py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
+                className="block py-2 px-3 text-white hover:text-[#6a11cb] transition-colors duration-200"
               >
                 Home
               </a>
@@ -110,7 +113,7 @@ const Navbar = () => {
               onMouseEnter={() => setIsMoviesDropdownOpen(true)}
               onMouseLeave={() => setIsMoviesDropdownOpen(false)}
             >
-              <button className="flex items-center w-full py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200">
+              <button className="flex items-center w-full py-2 px-3 text-white hover:text-[#6a11cb] transition-colors duration-200">
                 Movies
                 <svg
                   className="w-2.5 h-2.5 ms-2.5"
@@ -162,7 +165,7 @@ const Navbar = () => {
               onMouseEnter={() => setIsTvShowsDropdownOpen(true)}
               onMouseLeave={() => setIsTvShowsDropdownOpen(false)}
             >
-              <button className="flex items-center w-full py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200">
+              <button className="flex items-center w-full py-2 px-3 text-white hover:text-[#6a11cb] transition-colors duration-200">
                 TV Shows
                 <svg
                   className="w-2.5 h-2.5 ms-2.5"
@@ -218,7 +221,7 @@ const Navbar = () => {
                 type="text"
                 placeholder="Search..."
                 onChange={(e) => handleSearchResult(e.target.value)}
-                className="bg-black text-white border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-[#2d4263] placeholder-gray-400"
+                className="bg-black text-white border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-[#6a11cb] placeholder-gray-400"
               />
               <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
             </div>
@@ -227,18 +230,22 @@ const Navbar = () => {
               searchResult.length > 0 &&
               searchInput !== "" ? (
                 <div ref={searchResultRef}>
-                  <SearchResult result={searchResult} />
+                  <SearchResult
+                    result={searchResult}
+                    textOnly={true}
+                    onClose={closeSearchResults}
+                  />
                 </div>
               ) : (
                 ""
               )}
             </div>
           </div>
-          <button className="text-white hover:text-[#2d4263] transition-colors duration-200">
+          <button className="text-white hover:text-[#6a11cb] transition-colors duration-200">
             <User className="h-6 w-6" />
           </button>
           <button
-            className="text-white hover:text-[#2d4263] transition-colors duration-200"
+            className="text-white hover:text-[#6a11cb] transition-colors duration-200"
             onClick={handleLogout}
           >
             <LogOut className="h-6 w-6" />
@@ -249,12 +256,12 @@ const Navbar = () => {
         <div>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="mr-3 md:hidden inline-flex items-center p-2 w-10 h-10 justify-center text-white rounded-lg hover:bg-[#2d4263] focus:outline-none focus:ring-2 focus:ring-white"
+            className="mr-3 md:hidden inline-flex items-center p-2 w-10 h-10 justify-center text-white rounded-lg hover:bg-[#6a11cb] focus:outline-none focus:ring-2 focus:ring-white"
           >
             <Menu className="h-6 w-6" />
           </button>
           <button
-            className="md:hidden text-white hover:text-[#2d4263] transition-colors duration-200"
+            className="md:hidden text-white hover:text-[#6a11cb] transition-colors duration-200"
             onClick={handleLogout}
           >
             <LogOut className="h-6 w-6" />
@@ -268,7 +275,7 @@ const Navbar = () => {
           <li>
             <a
               href="/home"
-              className="block py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
+              className="block py-2 px-3 text-white hover:text-[#6a11cb] transition-colors duration-200"
             >
               Home
             </a>
@@ -276,7 +283,7 @@ const Navbar = () => {
           <li>
             <button
               onClick={() => setIsMoviesDropdownOpen(!isMoviesDropdownOpen)}
-              className="flex items-center w-full py-2 px-3 text-white hover:text-[#2d4263] transition-colors duration-200"
+              className="flex items-center w-full py-2 px-3 text-white hover:text-[#6a11cb] transition-colors duration-200"
             >
               Movies
               <svg

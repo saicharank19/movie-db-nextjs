@@ -13,9 +13,7 @@ body {
   padding: 40px;
   background: rgba(0, 0, 0, 0.5);
   box-sizing: border-box;
-  border-right: 1px solid white;
-  border-bottom: 1px solid white;
-  box-shadow: 0 15px 25px #2d4263;
+  box-shadow: 0 15px 25px #6a11cb;
   border-radius: 10px;
   text-align: center;
 }
@@ -57,7 +55,7 @@ body {
 
 .common-sign-box button {
   margin-bottom: 1.5rem;
-  background-color: #2d4263;
+  background-color: #6a11cb;
   backdrop-filter: blur(10px);
   width: 8rem;
   height: 2.5rem;
@@ -80,7 +78,7 @@ body {
   position: absolute;
   top: 60;
   z-index: 40;
-  background-color: #2d42633d;
+  background-color: #6a11cb;
   backdrop-filter: blur(10px);
   border-radius: 10px;
   box-shadow: 0 15px 25px black;
@@ -210,11 +208,31 @@ body {
   }
 }
 
+.img-card,
+.movieCard {
+  transition: transform 0.3s ease-in-out;
+}
+.img-card:hover {
+  transform: scale(1.25);
+}
+.movieCard {
+  border: 3px solid transparent;
+}
+.movieCard:hover {
+  background: #6a11cb;
+}
+.recommendationCard {
+  border: 3px solid transparent;
+}
+.recommendationCard:hover {
+  border: 3px solid#7886C7;
+}
+
 @layer base {
   * {
     @apply border-border;
     scrollbar-width: thin;
-    scrollbar-color: #2d42633d black;
+    scrollbar-color: #230c3d black;
   }
   body {
     @apply bg-background;

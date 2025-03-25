@@ -49,6 +49,7 @@ function Sign({ from }: { from: "signin" | "signup" }) {
       setLoading(false);
     }
   }, [from, email, password, setCookie, router]);
+
   console.log(loading);
   return (
     <div className="common-sign-box">
@@ -65,6 +66,12 @@ function Sign({ from }: { from: "signin" | "signup" }) {
             onChange={(e) => setPassword(e.target.value)}
             className="w-80 m-2"
             type="password"
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                handleSubmit();
+                // Perform your desired action here
+              }
+            }}
           />
           {password ? "" : <label>Password</label>}
         </div>

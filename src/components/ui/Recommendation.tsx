@@ -55,7 +55,9 @@ function Recommendation({ movieId }: { movieId: string | undefined }) {
 
   return (
     <div>
-      <h1 className="font-semibold mb-4">Recommendation</h1>
+      {recommendedList.length > 0 && (
+        <h1 className="font-semibold mb-4">Recommendation</h1>
+      )}
       <div className="flex w-full overflow-scroll">
         {recommendedList.map((eachMovie: Movie) => {
           const { original_title, poster_path } = eachMovie;
@@ -65,14 +67,16 @@ function Recommendation({ movieId }: { movieId: string | undefined }) {
               key={eachMovie.id}
               onClick={() => handleMovieDetails(eachMovie.id)}
             >
-              <Image
-                src={`https://image.tmdb.org/t/p/original${poster_path}`}
-                width={150}
-                height={150}
-                style={{ minWidth: "180px" }}
-                className="shrink-0 mr-2 rounded-2xl"
-                alt={original_title}
-              />
+              <div className=" rounded-2xl overflow-hidden">
+                <Image
+                  src={`https://image.tmdb.org/t/p/original${poster_path}`}
+                  width={180}
+                  height={180}
+                  style={{ minWidth: "180px" }}
+                  className="shrink-0 mr-2 rounded-2xl recommendationCard"
+                  alt={original_title}
+                />
+              </div>
             </div>
           );
         })}

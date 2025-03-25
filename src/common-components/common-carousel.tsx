@@ -19,6 +19,7 @@ function CommonCarousel({
   title: string;
 }) {
   const router = useRouter();
+
   const handleMovieDetails = useCallback(
     async (id: string) => {
       return router.push(`/details/${id}`);
@@ -44,13 +45,13 @@ function CommonCarousel({
                   className="basis-1/7"
                   onClick={() => handleMovieDetails(movie.id)}
                 >
-                  <div className="movieCard">
-                    <span>
+                  <div className="movieCard rounded-2xl overflow-hidden">
+                    <span className="">
                       <Image
-                        width={180}
-                        height={220}
                         src={imgPath}
-                        className="rounded-2xl"
+                        width={180}
+                        height={180}
+                        className="rounded-2xl img-card "
                         alt=""
                         blurDataURL="data:..."
                         placeholder="blur"
