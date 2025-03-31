@@ -42,7 +42,7 @@ function MovieDetails() {
     };
 
     getMovieDetails();
-  }, [movieId]);
+  }, [movieId, isSmallScreen]);
 
   // Destructure details with a fallback for null
   const {
@@ -77,21 +77,24 @@ function MovieDetails() {
           backgroundImage: `
       ${
         isSmallScreen
-          ? `url(https://image.tmdb.org/t/p/original${backdrop_path})`
+          ? `linear-gradient(to top, rgba(0, 0, 0, 0.86) 0%, rgba(0, 0, 0, 0) 100%), url(https://image.tmdb.org/t/p/original${backdrop_path})`
           : `linear-gradient(to right, rgba(0, 0, 0, 0.86) 0%, rgba(0, 0, 0, 0) 100%), url(https://image.tmdb.org/t/p/original${backdrop_path})`
       }`,
         }}
       >
         <div className="md:flex p-4 place-items-center">
-          <Image
-            className="h-[250px] rounded-2xl md:h-full "
+          <img
+            className="sm:rounded-2xl h-[300px] md:min-h-[400px] "
             src={`https://image.tmdb.org/t/p/original${poster_path}`}
-            width={300}
-            height={400}
-            style={{ objectFit: "contain" }}
+            // width={300}
+            // height={400}
+            style={{
+              objectFit: "contain",
+              borderRadius: `${isSmallScreen ? "16px" : ""}`,
+            }}
             alt={original_title || "Movie Poster"}
           />
-          <div className="pl-6 place-self-start overflow-hidden">
+          <div className="md:pl-6 place-self-start overflow-hidden">
             <h1 className="mt-4 text-center md:text-5xl md:text-start font-extrabold mb-4">
               {title}
             </h1>
@@ -129,7 +132,7 @@ function MovieDetails() {
             <p className="italic text-sm mb-4">{tagline}</p>
             <div>
               <h3 className="hidden md:block font-semibold">Overview</h3>
-              <p className="text-sm mb-4 md:w-[80%]">{overview}</p>
+              <p className="text-sm text-justify mb-4 md:w-[80%]">{overview}</p>
 
               {/*Directors */}
               <div className="mt-3">
