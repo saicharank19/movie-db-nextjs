@@ -4,7 +4,6 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Movie } from "@/types/request-body"; // Import the Movie type
-import Image from "next/image";
 import Recommendation from "@/components/ui/Recommendation";
 import { CastMember, CrewMember } from "@/types/request-body";
 
