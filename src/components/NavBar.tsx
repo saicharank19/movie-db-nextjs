@@ -81,7 +81,7 @@ const Navbar = () => {
   const dropdownClasses =
     "z-40 absolute left-0 font-normal bg-black divide-y divide-gray-700 rounded-lg shadow w-44 border border-white/20";
   const dropdownItemClasses =
-    "block px-4 py-2 text-white hover:text-[#6a11cb] hover:bg-white transition-colors duration-200";
+    "block px-4 py-2 text-white hover:text-[#6a11cb] transition-colors duration-200";
 
   return noNav.includes(pathName) ? null : (
     <nav className="bg-black">
@@ -220,7 +220,10 @@ const Navbar = () => {
               <input
                 type="text"
                 placeholder="Search..."
-                onChange={(e) => handleSearchResult(e.target.value)}
+                onChange={(e) => {
+                  handleSearchResult(e.target.value);
+                }}
+                
                 className="bg-black text-white border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-[#6a11cb] placeholder-gray-400"
               />
               <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
@@ -232,7 +235,6 @@ const Navbar = () => {
                 <div ref={searchResultRef}>
                   <SearchResult
                     result={searchResult}
-                    textOnly={true}
                     onClose={closeSearchResults}
                   />
                 </div>

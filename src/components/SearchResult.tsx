@@ -1,14 +1,13 @@
 import React, { useCallback } from "react";
 import { Movie } from "@/types/request-body";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+
 interface SearchResultProps {
   result: Movie[]; // Replace `any` with the actual type of your search result data
-  textOnly: boolean;
   onClose: () => void; // Add this prop for closing the search results
 }
 
-function SearchResult({ result, textOnly, onClose }: SearchResultProps) {
+function SearchResult({ result, onClose }: SearchResultProps) {
   const router = useRouter();
   const handleMovieDetails = useCallback(
     async (id: string) => {
@@ -16,8 +15,8 @@ function SearchResult({ result, textOnly, onClose }: SearchResultProps) {
     },
     [router]
   );
-  return textOnly ? (
-    <div>
+  return (
+    <div className="searchResultContainer">
       {result.map((eachResult: Movie, index) => {
         return (
           <div
@@ -30,30 +29,6 @@ function SearchResult({ result, textOnly, onClose }: SearchResultProps) {
           >
             <p>{eachResult.title}</p>
             <p>{eachResult.release_date}</p>
-          </div>
-        );
-      })}
-    </div>
-  ) : (
-    <div>
-      {result.map((eachResult: Movie, index) => {
-        const imgPath =
-          "https://image.tmdb.org/t/p/original" + eachResult.poster_path;
-        return (
-          <div
-            onClick={() => handleMovieDetails(eachResult.id)}
-            key={index}
-            // className="search-result-item p-1 text-white"
-          >
-            <Image
-              width={180}
-              height={220}
-              src={imgPath}
-              className="rounded-2xl"
-              alt=""
-              blurDataURL="data:..."
-              placeholder="blur"
-            />
           </div>
         );
       })}

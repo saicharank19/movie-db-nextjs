@@ -23,3 +23,16 @@ export interface Movie {
   genres: Genres[];
   runtime: number;
 }
+
+export interface CrewMember {
+  id: number;
+  name: string;
+  job: string; // e.g., "Director", "Producer"
+  department: string; // e.g., "Directing", "Production"
+}
+export interface CastMember {
+  id: number;
+  name: string;
+  character: string; // The character they played in the movie
+  profile_path: string | null; // Path to their profile image (optional)
+}

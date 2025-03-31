@@ -11,30 +11,16 @@ function Recommendation({ movieId }: { movieId: string | undefined }) {
   useEffect(() => {
     const getRecommendations = async () => {
       try {
-        // Check if recommendations are cached in localStorage
-        const cachedData = localStorage.getItem(`recommendations-${movieId}`);
-        if (cachedData) {
-          // Use cached data if available
-          setRecommendedList(JSON.parse(cachedData));
-        } else {
-          // Fetch recommendations from the API if not cached
-          const recommendationDetails = await axios.get(
-            `/api/movies/recommendation/${movieId}`
-          );
-          if (
-            recommendationDetails.data &&
-            recommendationDetails.data.data.results
-          ) {
-            // Update state with fetched data
-            const results = recommendationDetails.data.data.results;
-            setRecommendedList(results);
-
-            // Cache the fetched data in localStorage
-            localStorage.setItem(
-              `recommendations-${movieId}`,
-              JSON.stringify(results)
-            );
-          }
+        const recommendationDetails = await axios.get(
+          `/api/movies/recommendation/${movieId}`
+        );
+        if (
+          recommendationDetails.data &&
+          recommendationDetails.data.data.results
+        ) {
+          // Update state with fetched data
+          const results = recommendationDetails.data.data.results;
+          setRecommendedList(results);
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -58,7 +44,7 @@ function Recommendation({ movieId }: { movieId: string | undefined }) {
       {recommendedList.length > 0 && (
         <h1 className="font-semibold mb-4">Recommendation</h1>
       )}
-      <div className="flex w-full overflow-scroll">
+      <div className="flex w-full overflow-x-scroll">
         {recommendedList.map((eachMovie: Movie) => {
           const { original_title, poster_path } = eachMovie;
 
