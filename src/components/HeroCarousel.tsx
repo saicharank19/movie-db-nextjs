@@ -127,6 +127,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
               style={{
                 perspective: "1000px",
                 transformOrigin: "bottom",
+                cursor: "pointer",
               }}
             >
               <div

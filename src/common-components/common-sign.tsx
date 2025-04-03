@@ -50,13 +50,13 @@ function Sign({ from }: { from: "signin" | "signup" }) {
     }
   }, [from, email, password, setCookie, router]);
 
-  console.log(loading);
   return (
-    <div className="common-sign-box">
+    <div className="rounded-2xl common-sign-box">
       {loading && <div className="loader"></div>}
-
       <div style={{ opacity: loading ? "0.5" : "" }}>
-        <h1>{from == "signup" ? "Sign Up" : "Sign In"}</h1>
+        <h1 className="font-bold">
+          {from == "signup" ? "Sign Up" : "Sign In"}
+        </h1>
         <div className="user-box">
           <input onChange={(e) => setEmail(e.target.value)} />
           {email ? "" : <label>Email</label>}

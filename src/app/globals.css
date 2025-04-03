@@ -39,13 +39,35 @@ body {
   box-sizing: border-box;
 }
 
+.auth-page {
+  background: linear-gradient(
+    to right,
+    #e4e4e7,
+    #ffcc00,
+    #e4e4e7
+  ); /* Light gray, yellow, light gray gradient */
+  background-size: 400% 400%;
+  animation: animate-background 10s infinite ease-in-out;
+}
+
+@keyframes animate-background {
+  0% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
 .common-sign-box {
-  width: 400px;
-  padding: 40px;
-  background: rgba(0, 0, 0, 0.5);
+  min-width: 400px;
+  width: 35%;
+  padding: 5%;
+  background: rgba(26, 26, 46, 0.9); /* Dark navy with opacity */
   box-sizing: border-box;
-  box-shadow: 0 15px 25px #6a11cb;
-  border-radius: 10px;
   text-align: center;
 }
 
@@ -58,10 +80,10 @@ body {
   width: 100%;
   padding: 10px 0;
   font-size: 16px;
-  color: #fff;
+  color: #f0f0f0; /* Light text for readability */
   margin-bottom: 30px;
   border: none;
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid #ffc857; /* Popcorn yellow color for border */
   outline: none;
   background: transparent;
 }
@@ -72,7 +94,7 @@ body {
   left: 0;
   padding: 10px 0;
   font-size: 16px;
-  color: #fff;
+  color: #b8b8b8; /* Lighter gray for labels */
   pointer-events: none;
   transition: 0.5s;
 }
@@ -82,15 +104,25 @@ body {
   top: -20px;
   left: 0;
   font-size: 15px;
+  color: #ffc857; /* Popcorn yellow for active labels */
 }
 
 .common-sign-box button {
   margin-bottom: 1.5rem;
-  background-color: #6a11cb;
+  background-color: #d62839; /* Red from logo */
+  color: #ffffff;
   backdrop-filter: blur(10px);
   width: 8rem;
   height: 2.5rem;
   border-radius: 1rem;
+  border: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.common-sign-box button:hover {
+  background-color: #7d1935; /* Burgundy from "FILMS" text */
+  box-shadow: 0 0 8px #ffc857; /* Subtle glow with popcorn yellow */
 }
 
 .hero-slider-box {
@@ -130,6 +162,7 @@ body {
   border-radius: 6px;
 }
 .search-result-item:hover {
+  cursor: pointer;
   background-color: #230c3d;
 }
 .glass {
@@ -263,18 +296,21 @@ body {
   transition: transform 0.3s ease-in-out;
 }
 .img-card:hover {
+  cursor: pointer;
   transform: scale(1.25);
 }
 .movieCard {
   border: 3px solid transparent;
 }
 .movieCard:hover {
+  cursor: pointer;
   background: #6a11cb;
 }
 .recommendationCard {
   border: 3px solid transparent;
 }
 .recommendationCard:hover {
+  cursor: pointer;
   border: 3px solid#6a11cb;
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -6,6 +7,7 @@ import axios from "axios";
 import SearchResult from "./SearchResult";
 import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
+import logo from "@/images/logo.jpg";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -89,8 +91,14 @@ const Navbar = () => {
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
         {/* Logo */}
         <a href="/home" className="flex items-center space-x-3">
-          <span className="text-2xl font-bold text-white hover:text-[#6a11cb] transition-colors duration-200">
-            BRAND
+          <span className="text-2xl font-bold text-white hover: transition-colors duration-200">
+            <img
+              className="rounded-2xl shadow-lg hover:shadow-[#6a11cb] transition-all duration-200"
+              width={50}
+              height={50}
+              src={logo.src}
+              alt=""
+            />
           </span>
         </a>
 
@@ -101,7 +109,7 @@ const Navbar = () => {
             <li>
               <a
                 href="/home"
-                className="block py-2 px-3 text-white hover:text-[#6a11cb] transition-colors duration-200"
+                className=" block py-2 px-3 text-white hover:font-bold hover:text-[#6a11cb] transition-colors duration-200"
               >
                 Home
               </a>
@@ -113,7 +121,7 @@ const Navbar = () => {
               onMouseEnter={() => setIsMoviesDropdownOpen(true)}
               onMouseLeave={() => setIsMoviesDropdownOpen(false)}
             >
-              <button className="flex items-center w-full py-2 px-3 text-white hover:text-[#6a11cb] transition-colors duration-200">
+              <button className="hover:font-bold  flex items-center w-full py-2 px-3 text-white hover:text-[#6a11cb] transition-colors duration-200">
                 Movies
                 <svg
                   className="w-2.5 h-2.5 ms-2.5"
@@ -223,7 +231,6 @@ const Navbar = () => {
                 onChange={(e) => {
                   handleSearchResult(e.target.value);
                 }}
-                
                 className="bg-black text-white border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-[#6a11cb] placeholder-gray-400"
               />
               <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
