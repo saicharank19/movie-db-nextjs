@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import logo from "@/images/logo.jpg";
 
 const Navbar = () => {
+  const [loading, setLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMoviesDropdownOpen, setIsMoviesDropdownOpen] = useState(false);
   const [isTvShowsDropdownOpen, setIsTvShowsDropdownOpen] = useState(false);
@@ -67,6 +68,7 @@ const Navbar = () => {
 
   const handleLogout = useCallback(async () => {
     try {
+      setLoading(true);
       const response = await axios.post("/api/user/logout");
       console.log(response.data.success);
       if (response.data.success) {
@@ -77,6 +79,8 @@ const Navbar = () => {
       if (error instanceof Error) {
         console.log(error);
       }
+    } finally {
+      setLoading(false);
     }
   }, [router]);
   // Dropdown and mobile menu styles
@@ -85,10 +89,12 @@ const Navbar = () => {
   const dropdownItemClasses =
     "block px-4 py-2 text-white hover:text-[#6a11cb] transition-colors duration-200";
 
-  return noNav.includes(pathName) ? null : (
-    <nav className="bg-black">
+  return loading ? (
+    <div className="loader"></div>
+  ) : noNav.includes(pathName) ? null : (
+    <nav className="bg-black ">
       {/* Container */}
-      <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
+      <div className=" max-w-screen-xl flex items-center justify-between mx-auto p-4">
         {/* Logo */}
         <a href="/home" className="flex items-center space-x-3">
           <span className="text-2xl font-bold text-white hover: transition-colors duration-200">
@@ -143,22 +149,22 @@ const Navbar = () => {
                 <div className={dropdownClasses}>
                   <ul className="py-2">
                     <li>
-                      <a href="#" className={dropdownItemClasses}>
+                      <a href="/popular" className={dropdownItemClasses}>
                         Popular
                       </a>
                     </li>
                     <li>
-                      <a href="#" className={dropdownItemClasses}>
+                      <a href="/nowplaying" className={dropdownItemClasses}>
                         Now Playing
                       </a>
                     </li>
                     <li>
-                      <a href="#" className={dropdownItemClasses}>
+                      <a href="/upcoming" className={dropdownItemClasses}>
                         Upcoming
                       </a>
                     </li>
                     <li>
-                      <a href="#" className={dropdownItemClasses}>
+                      <a href="/toprated" className={dropdownItemClasses}>
                         Top Rated
                       </a>
                     </li>
@@ -314,22 +320,22 @@ const Navbar = () => {
             {isMoviesDropdownOpen && (
               <ul className="py-2 pl-4">
                 <li>
-                  <a href="#" className={dropdownItemClasses}>
+                  <a href="/popular" className={dropdownItemClasses}>
                     Popular
                   </a>
                 </li>
                 <li>
-                  <a href="#" className={dropdownItemClasses}>
+                  <a href="/nowplaying" className={dropdownItemClasses}>
                     Now Playing
                   </a>
                 </li>
                 <li>
-                  <a href="#" className={dropdownItemClasses}>
+                  <a href="/upcoming" className={dropdownItemClasses}>
                     Upcoming
                   </a>
                 </li>
                 <li>
-                  <a href="#" className={dropdownItemClasses}>
+                  <a href="/toprated" className={dropdownItemClasses}>
                     Top Rated
                   </a>
                 </li>

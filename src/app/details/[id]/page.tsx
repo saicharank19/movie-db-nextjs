@@ -158,7 +158,7 @@ function MovieDetails() {
           {cast.map((actor: CastMember) => (
             <div
               key={actor.id}
-              className="w-[140px] rounded-2xl bg-[#000000a4] text-center mr-3 shadow-lg hover:bg-[#6a11cb] hover:shadow-[#230c3d] "
+              className="cursor-pointer w-[140px] rounded-2xl bg-[#000000a4] text-center mr-3 shadow-lg hover:bg-[#6a11cb] hover:shadow-[#230c3d] "
             >
               {/* Conditional Rendering: Image or Skeleton */}
               {actor.profile_path ? (
