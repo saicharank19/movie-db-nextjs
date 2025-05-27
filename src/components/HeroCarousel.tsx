@@ -174,7 +174,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
       </div>
 
       {/* Slide indicators */}
-      <div className="hidden md:flex absolute bottom-4 left-1/2 -translate-x-1/2  space-x-2">
+      {/* <div className="hidden md:flex absolute bottom-4 left-1/2 -translate-x-1/2  space-x-2">
         {slides.map((_, index) => (
           <div
             key={index}
@@ -183,7 +183,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ slides }) => {
             }`}
           />
         ))}
-      </div>
+      </div> */}
 
       {/* Navigation buttons */}
       <div className="absolute top-1/4 left-4  md:top-1/2 md:left-4 -translate-y-1/2">

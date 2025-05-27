@@ -314,6 +314,15 @@ body {
   border: 3px solid#6a11cb;
 }
 
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 @layer base {
   * {
     @apply border-border;

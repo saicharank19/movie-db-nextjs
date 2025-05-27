@@ -65,6 +65,14 @@ function MovieDetails() {
     return `${hours}h ${remainingMinutes}m`;
   }
 
+  function handleDirectorClick(id: number) {
+    window.location.href = `/person/${id}`;
+  }
+
+  function handleActorClick(id: number) {
+    window.location.href = `/person/${id}`;
+  }
+
   return loading ? (
     <div className="loader"></div>
   ) : (
@@ -142,7 +150,10 @@ function MovieDetails() {
                   {directors.map((director: CrewMember) => {
                     return (
                       <div key={director.id}>
-                        <button className="mr-2 rounded-xl p-2 bg-[#0000006a] hover:bg-[#6a11cb] ">
+                        <button
+                          onClick={() => handleDirectorClick(director.id)}
+                          className="mr-2 rounded-xl p-2 bg-[#0000006a] hover:bg-[#6a11cb] "
+                        >
                           {director.name}
                         </button>
                       </div>
@@ -158,6 +169,7 @@ function MovieDetails() {
           {cast.map((actor: CastMember) => (
             <div
               key={actor.id}
+              onClick={() => handleActorClick(actor.id)}
               className="cursor-pointer w-[140px] rounded-2xl bg-[#000000a4] text-center mr-3 shadow-lg hover:bg-[#6a11cb] hover:shadow-[#230c3d] "
             >
               {/* Conditional Rendering: Image or Skeleton */}
