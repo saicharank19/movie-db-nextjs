@@ -4,7 +4,7 @@ import { authenticateJWT } from "@/helper/common-auth";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const source = await request.headers.get("request");

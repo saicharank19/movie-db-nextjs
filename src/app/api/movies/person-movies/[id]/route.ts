@@ -5,7 +5,7 @@ import { CrewMovieCredit, CastMovieCredit } from "@/types/request-body";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const source = await request.headers.get("request");
@@ -17,7 +17,6 @@ export async function GET(
 
     const response = await axios.get(url);
 
-    console.log(response.data);
     const { cast, crew } = response.data;
 
     // Example: Movies directed
