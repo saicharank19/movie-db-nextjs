@@ -1,10 +1,10 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { authenticateJWT } from "@/helper/common-auth";
 
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ slug: string }> }
+  context: { params: Promise<{ slug: string[] }> },
 ) {
   try {
     const source = request.headers.get("request");
@@ -12,22 +12,24 @@ export async function GET(
       await authenticateJWT(request); // authenticate only if the source is "mobile"
     }
 
-    const { params } = context;
-    const awaitedParams = await params; // Await the params object
-    const { slug } = awaitedParams; // Destructure params directly
+    const { slug } = await context.params; // Destructure params directly
     const API_KEY = process.env.API_KEY;
     // Correct API request URL with the api_key query parameter
+    const query = slug.join(" ");
     const result = await axios.get(
-      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${slug}`
+      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`,
     );
 
-    return new Response(JSON.stringify({ data: result.data, success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new NextResponse(
+      JSON.stringify({ data: result.data, success: true }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   } catch (error) {
     // Proper error handling and return response
-    return new Response(
+    return new NextResponse(
       JSON.stringify({
         error: error instanceof Error ? error.message : "Unknown error",
         success: false,
@@ -35,7 +37,7 @@ export async function GET(
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 }
