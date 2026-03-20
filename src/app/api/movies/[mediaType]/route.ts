@@ -43,7 +43,7 @@ export async function GET(
         }
       );
     }
-    console.log(API_KEY);
+    // console.log(API_KEY);
     const result = await axios.get(
       `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
     );
